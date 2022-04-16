@@ -4,26 +4,26 @@ from ._processing import cleanText
 from text_processing import pos_tagger
 
 
-def getKeywords(text, text_is_clean = False):
+def getKeywords(text, clean_text = True):
     
     """
     Extract keywords from `text`.
     Args:
         text (str):
             String to be processed.
-        text_is_clean (bool):
-            If True, do not apply text preprocessing
-            before keyword extraction. Defaults to False.
+        clean_text (bool):
+            If True, `text` is assumed to be clean. 
+            Defaults to False.
     Returns:
         list: Keywords as they appear in `text`.
     """
     
     tags = []
     
-    if text_is_clean:
+    if clean_text:
         new_text = text.lower()
     else:    
-        new_text = cleanText(text, lower = True, keep_accents = False)
+        new_text = cleanText(text, lowercase = True, drop_accents = True)
 
     # Remove symbols that are not letters or spaces.    
     if isinstance(new_text, str):

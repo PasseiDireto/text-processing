@@ -145,16 +145,16 @@ def removeAccents(text):
     )
 
 
-def cleanText(text, lower = True, keep_accents = True):
+def cleanText(text, lowercase = True, drop_accents = True):
     """
     Regex-based text processing.
     Args:
         text (str):
             String to be processed.
-        lower (bool):
+        lowercase (bool):
             If True, output will be in lowercase.
             Defaults to True.
-        keep_accents (bool, optional):
+        drop_accents (bool, optional):
             If True, normalize accented characters. 
             Defaults to True.
     Returns:
@@ -166,7 +166,7 @@ def cleanText(text, lower = True, keep_accents = True):
                 replaceEmails(
                     removeRepetitions(
                         reformatAbbreviations(
-                            removeBadChars(text.lower() if lower else text)
+                            removeBadChars(text.lower() if lowercase else text)
                         )
                     )
                 )
@@ -181,7 +181,7 @@ def cleanText(text, lower = True, keep_accents = True):
         "\n", " "
     )
 
-    if not keep_accents:
+    if drop_accents:
         return removeAccents(new_text)
     
     return new_text
