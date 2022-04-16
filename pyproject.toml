@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "text_processing"
+version = "0.1.0"
+description = "Tools for Brazilian Portuguese text processing"
+authors = ["Allan Covacevice"]
+
+[tool.poetry.dependencies]
+nlpnet = "^1.2.4"
+nltk = "^3.7"
+requests = "^2.27.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
