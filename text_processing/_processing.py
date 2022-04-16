@@ -161,15 +161,12 @@ def cleanText(text, lower = True, keep_accents = True):
         str: processed `text`.
     """
     
-    if lower:
-        new_text = text.lower()
-        
     new_text = adjustSpacing(
             replaceUrls(
                 replaceEmails(
                     removeRepetitions(
                         reformatAbbreviations(
-                            removeBadChars(text)
+                            removeBadChars(text.lower() if lower else text)
                         )
                     )
                 )
