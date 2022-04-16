@@ -35,7 +35,7 @@ nltk_dir = os.path.join(local_dir, "nltk_data")
 nltk.data.path += [nltk_dir]
 
 try:
-    nltk.data.find("tokenizers/punkt/english.pickle")
+    nltk.data.find("tokenizers/punkt/portuguese.pickle")
 
 except LookupError:
     

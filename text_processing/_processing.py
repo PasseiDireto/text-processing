@@ -162,7 +162,7 @@ def cleanText(text, lower = True, keep_accents = True):
     """
     
     if lower:
-        new_text = new_text.lower()
+        new_text = text.lower()
         
     new_text = adjustSpacing(
             replaceUrls(
