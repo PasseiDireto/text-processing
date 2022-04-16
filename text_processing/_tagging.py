@@ -21,9 +21,9 @@ def getKeywords(text, clean_text = True):
     tags = []
     
     if clean_text:
-        new_text = text.lower()
-    else:    
         new_text = cleanText(text, lowercase = True, drop_accents = True)
+    else:    
+        new_text = text.lower()
 
     # Remove symbols that are not letters or spaces.    
     if isinstance(new_text, str):
