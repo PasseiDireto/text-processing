@@ -145,18 +145,25 @@ def removeAccents(text):
     )
 
 
-def cleanText(text, keep_accents = True):
+def cleanText(text, lower = True, keep_accents = True):
     """
     Regex-based text processing.
     Args:
         text (str):
             String to be processed.
+        lower (bool):
+            If True, output will be in lowercase.
+            Defaults to True.
         keep_accents (bool, optional):
-            Whether to replace accented characters or not. 
+            If True, normalize accented characters. 
             Defaults to True.
     Returns:
         str: processed `text`.
     """
+    
+    if lower:
+        new_text = new_text.lower()
+        
     new_text = adjustSpacing(
             replaceUrls(
                 replaceEmails(
@@ -176,6 +183,8 @@ def cleanText(text, keep_accents = True):
     ).replace(
         "\n", " "
     )
+
     if not keep_accents:
         return removeAccents(new_text)
+    
     return new_text

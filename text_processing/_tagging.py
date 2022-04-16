@@ -21,14 +21,14 @@ def getKeywords(text, text_is_clean = False):
     tags = []
     
     if text_is_clean:
-        new_text = text
+        new_text = text.lower()
     else:    
-        new_text = cleanText(text, keep_accents = False)
+        new_text = cleanText(text, lower = True, keep_accents = False)
 
     # Remove symbols that are not letters or spaces.    
     if isinstance(new_text, str):
         new_text = re.sub(
-            r"[^a-z áâãàéêíóôõúüç-]+", "", new_text.lower()
+            r"[^a-z áâãàéêíóôõúüç-]+", "", new_text
         )
 
     for sentence in pos_tagger.tag(new_text):
