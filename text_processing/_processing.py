@@ -161,10 +161,11 @@ def cleanText(text, lowercase = True, drop_accents = True):
         str: processed `text`.
     """
 
-    if drop_accents:
-        return removeAccents(new_text)
+    new_text = removeBadChars(text.lower() if lowercase else text)
     
-    new_text = removeBadChars(text.lower() if lowercase else text) 
+    if drop_accents:
+        new_text = removeAccents(new_text)
+     
     new_text = new_text.replace("\r", " ").replace("\t", " ").replace("\n", " ")
     
     return adjustSpacing(
