@@ -20,7 +20,7 @@ def getKeywords(text, clean_text=True):
     """
 
     if not "__pos_tagger__" in globals():
-        __pos_tagger__ = nlpnet.POSTagger()
+        __pos_tagger__ = nlpnet.POSTagger(language="pt")
 
     tags = []
 

@@ -63,6 +63,19 @@ except LookupError:
 
     shutil.unpack_archive(punkt, os.path.realpath(tokn_dir))
 
+    punkt_dir = os.path.join(tokn_dir, "punkt")
+    py3_dir = os.path.join(punkt_dir, "PY3")
+
+    for file in os.listdir(punkt_dir):
+        filepath = os.path.join(punkt_dir, file)
+        if os.path.isfile(filepath):
+            if not file.startswith("portuguese"):
+                pathlib.Path(filepath).unlink()
+
+    for file in os.listdir(py3_dir):
+        if not file.startswith("portuguese"):
+            pathlib.Path(os.path.join(py3_dir, file)).unlink()
+
     if os.path.isfile(punkt):
         pathlib.Path(punkt).unlink()
 
