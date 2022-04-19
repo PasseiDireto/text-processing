@@ -5,16 +5,16 @@ import nlpnet
 from ._processing import cleanText
 
 
-def getKeywords(text, clean_text=True):
+def getKeywords(text, clean_first=True):
 
     """
     Extract keywords from `text`.
     Args:
         text (str):
             String to be processed.
-        clean_text (bool):
-            If True, `text` is assumed to be clean.
-            Defaults to False.
+        clean_first (bool):
+            If True, `text` is to be cleaned.
+            Defaults to True.
     Returns:
         list: Keywords as they appear in `text`.
     """
@@ -24,7 +24,7 @@ def getKeywords(text, clean_text=True):
 
     tags = []
 
-    if clean_text:
+    if clean_first:
         new_text = cleanText(text, lowercase=True, drop_accents=True)
     else:
         new_text = text.lower()
