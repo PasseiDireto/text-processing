@@ -29,9 +29,9 @@ def getKeywords(text, clean_first=True):
     else:
         new_text = text.lower()
 
-    # Remove symbols that are not letters or spaces.
+    # Remove symbols that are not letters, numbers or spaces.
     if isinstance(new_text, str):
-        new_text = re.sub(r"[^a-z áâãàéêíóôõúüç-]+", "", new_text)
+        new_text = re.sub(r"[^a-z0-9 áâãàéêíóôõúüç-]+", "", new_text)
 
     for sentence in __pos_tagger__.tag(new_text):
         tokens, pos = zip(*sentence)
