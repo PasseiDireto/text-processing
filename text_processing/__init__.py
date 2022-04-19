@@ -1,11 +1,25 @@
-import nlpnet
-import nltk
 import os
 import pathlib
-import requests
 import shutil
 
+import nlpnet
+import nltk
+import requests
+from tqdm import tqdm
+
 local_dir = os.path.dirname(__file__)
+
+
+def download(url, filepath):
+    with requests.get(url, stream=True) as response:
+        response.raise_for_status()
+        with open(filepath, "wb") as f:
+            pbar = tqdm(total=int(response.headers["Content-Length"]))
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:  # filter out keep-alive new chunks
+                    f.write(chunk)
+                    pbar.update(len(chunk))
+
 
 # Download pos-pt ----------------------
 
@@ -19,10 +33,7 @@ if not os.path.exists(pos_pt):
 
     print("Downloading pos-pt...")
     url = "http://nilc.icmc.usp.br/nlpnet/data/pos-pt.tgz"
-    response = requests.get(url)
-
-    with open(f"{pos_pt}.tgz", "wb") as output_file:
-        output_file.write(response.content)
+    download(url, f"{pos_pt}.tgz")
 
     shutil.unpack_archive(f"{pos_pt}.tgz", os.path.realpath(pos_dir))
 
@@ -32,21 +43,30 @@ if not os.path.exists(pos_pt):
 # Download nltk data -------------------
 
 nltk_dir = os.path.join(local_dir, "nltk_data")
+tokn_dir = os.path.join(nltk_dir, "tokenizers")
+
 nltk.data.path += [nltk_dir]
 
 try:
-    nltk.data.find("tokenizers/punkt/portuguese.pickle")
+    nltk.data.find(os.path.join("tokenizers", "punkt", "portuguese.pickle"))
 
 except LookupError:
-    
-    if not os.path.exists(nltk_dir):
-        os.makedirs(nltk_dir)
-        
-    print("Downloading nltk data...")
-    nltk.download("punkt", download_dir=nltk_dir, quiet=True)
-    
-nlpnet.set_data_dir(pos_pt)
-pos_tagger = nlpnet.POSTagger()
 
-from ._processing import cleanText, removeAccents
+    if not os.path.exists(tokn_dir):
+        os.makedirs(tokn_dir)
+
+    punkt = os.path.join(tokn_dir, "punkt.zip")
+
+    print("Downloading nltk data...")
+    url = "https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt.zip"
+    download(url, punkt)
+
+    shutil.unpack_archive(punkt, os.path.realpath(tokn_dir))
+
+    if os.path.isfile(punkt):
+        pathlib.Path(punkt).unlink()
+
+nlpnet.set_data_dir(pos_pt)
+
+from ._processing import *
 from ._tagging import getKeywords
