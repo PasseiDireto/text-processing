@@ -1,43 +1,43 @@
-import re
+from typing import Dict, List, Union
 
-import nlpnet
-
-from ._processing import cleanText
+from polyglot.text import Text
 
 
-def getKeywords(text, clean_first=True):
+def get_keywords(
+    text: str,
+    consider: List[str] = ["NOUN", "ADJ"],
+    min_size: int = 3,
+    as_bow: bool = False,
+    lang: str = "pt",
+) -> Union[List[str], Dict]:
 
-    """
-    Extract keywords from `text`.
+    """Extract keywords from `text`.
     Args:
-        text (str):
-            String to be processed.
-        clean_first (bool):
-            If True, `text` is to be cleaned.
-            Defaults to True.
+        text (str): string to be processed.
+        consider (List, optional): Part-of-speech (PoS) elements considered to be keywords.
+        Defaults to ["NOUN", "ADJ"].
+        min_size (int, optional): Minimum length of output tokens. Defaults to 3.
+        as_bow (bool, optional): If True, computes keyword frequencies and returns a dict;
+        returns list of extracted keywords otherwise.
+        Defaults to False.
     Returns:
-        list: Keywords as they appear in `text`.
+        List or Dict: List of extracted keywords or dict with keyword frequencies.
     """
 
-    if not "__pos_tagger__" in globals():
-        __pos_tagger__ = nlpnet.POSTagger(language="pt")
+    text_obj = Text(text, hint_language_code=lang)
 
-    tags = []
+    def search(text_obj, consider, min_size, as_bow):
+        pos_tags, counts = text_obj.pos_tags, {}
+        for token, tag in pos_tags:
+            if tag in consider and len(token) >= min_size:
+                if as_bow:
+                    counts[token] = counts.get(token, 0) + 1
+                else:
+                    yield token
+        if as_bow:
+            yield counts
 
-    if clean_first:
-        new_text = cleanText(text, lowercase=True, drop_accents=True)
-    else:
-        new_text = text.lower()
+    if as_bow:
+        return next(search(text_obj, consider, min_size, as_bow))
 
-    # Remove symbols that are not letters, numbers or spaces.
-    if isinstance(new_text, str):
-        new_text = re.sub(r"[^a-z0-9 áâãàéêíóôõúüç-]+", "", new_text)
-
-    for sentence in __pos_tagger__.tag(new_text):
-        tokens, pos = zip(*sentence)
-        for idx, expr in enumerate(pos):
-            if expr in ("N", "ADJ") and len(tokens[idx]) > 2:
-                tag = tokens[idx]
-                tags.append(tag)
-
-    return tags
+    return list(search(text_obj, consider, min_size, as_bow))
