@@ -2,7 +2,7 @@ import re
 import unicodedata
 
 
-def rSub(text, repl, flags=0, **kwargs):
+def rsub(text, repl, flags=0, **kwargs):
 
     """
     Recursive string replacement by multiple regex patterns.
@@ -54,7 +54,7 @@ def rSub(text, repl, flags=0, **kwargs):
     return sub(text)
 
 
-def removeBadChars(text):
+def remove_bad_chars(text):
 
     pattern = r"([^a-z\s0-9&#@=><\+\/\*\^,\.;:!?_\-\)\(\]\[\}\{áâãàéêíóôõúç]+)"
     chars = re.compile(pattern, flags=2)
@@ -70,24 +70,24 @@ def removeBadChars(text):
     return chars.sub(_repl, text)
 
 
-def removeRepetitions(text):
+def remove_repetitions(text):
 
     # Repetitions of non-alphanumerical chars.
     pattern = r"([^a-záâãàéêíóôõúç0-9\s])\1+"
-    new_text = rSub(text, repl=r"\1", pattern1=pattern, flags=2)
+    new_text = rsub(text, repl=r"\1", pattern1=pattern, flags=2)
 
     # Repetitions of words separated by a space.
     pattern = r"\b(\w+)( \1\b)+"
 
-    return rSub(new_text, repl=r"\1", pattern1=pattern, flags=2)
+    return rsub(new_text, repl=r"\1", pattern1=pattern, flags=2)
 
 
-def replaceEmails(text, by=" "):
+def replace_emails(text, by=" "):
     pattern = re.compile(r"([A-Z0-9_.+-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)+)", flags=2)
     return pattern.sub(by, text)
 
 
-def replaceUrls(text, by=" "):
+def replace_urls(text, by=" "):
     pattern = re.compile(
         r"((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))",
         flags=2,
@@ -95,28 +95,28 @@ def replaceUrls(text, by=" "):
     return pattern.sub(by, text)
 
 
-def reformatAbbreviations(text):
-    return rSub(text, repl=r"", pattern1=r"((:?[A-Z]+\.)+)", pattern2=r"(\.)")
+def reformat_abbreviations(text):
+    return rsub(text, repl=r"", pattern1=r"((:?[A-Z]+\.)+)", pattern2=r"(\.)")
 
 
-def adjustSpacing(text):
+def adjust_spacing(text):
 
     # Spacing around punctuation.
-    new_text = rSub(text, repl=r" \1 ", pattern1=r"([^\w\d\s]+)", flags=2)
+    new_text = rsub(text, repl=r" \1 ", pattern1=r"([^\w\d\s]+)", flags=2)
 
     # Collapse multiple spaces into one.
-    new_text = rSub(new_text, repl=r" ", pattern1=r"(\s+)", flags=2)
+    new_text = rsub(new_text, repl=r" ", pattern1=r"(\s+)", flags=2)
 
     return new_text.strip()
 
 
-def removeAccents(text):
+def remove_accents(text):
     return "".join(
         c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn"
     )
 
 
-def cleanText(text, lowercase=True, drop_accents=True):
+def clean_text(text, lowercase=True, drop_accents=True):
     """
     Regex-based text processing.
     Args:
@@ -132,13 +132,15 @@ def cleanText(text, lowercase=True, drop_accents=True):
         str: processed `text`.
     """
 
-    new_text = removeBadChars(text.lower() if lowercase else text)
+    new_text = remove_bad_chars(text.lower() if lowercase else text)
 
     if drop_accents:
-        new_text = removeAccents(new_text)
+        new_text = remove_accents(new_text)
 
     new_text = new_text.replace("\r", " ").replace("\t", " ").replace("\n", " ")
 
-    return adjustSpacing(
-        replaceUrls(replaceEmails(removeRepetitions(reformatAbbreviations(new_text))))
+    return adjust_spacing(
+        replace_urls(
+            replace_emails(remove_repetitions(reformat_abbreviations(new_text)))
+        )
     )
