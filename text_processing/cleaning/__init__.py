@@ -1,4 +1,4 @@
-from .cleaning import (
+from ._cleaning import (
     adjust_spacing,
     clean_text,
     reformat_abbreviations,
