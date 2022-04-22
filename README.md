@@ -1,3 +1,3 @@
 # text-processing
 
-Basic text processing and keyword extraction for Brazilian Portuguese.
+Basic text processing and keyword extraction for Portuguese, Spanish and English.
