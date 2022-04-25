@@ -9,7 +9,7 @@ download("embeddings2", "pt")
 
 def get_keywords(
     text: str,
-    consider: List = ["NOUN", "ADJ", "VERB", "PROPN"],
+    consider: List = ["NOUN", "ADJ", "PROPN"],
     min_size: int = 3,
     as_bow: bool = False,
 ) -> Union[List, Dict]:
